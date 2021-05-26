@@ -1,0 +1,1162 @@
+	section	.text,"ax",@progbits
+	assume	adl = 1
+	section	.text,"ax",@progbits
+	public	_spawnAsteroid
+_spawnAsteroid:
+	ld	hl, -3
+	call	__frameset
+	ld	hl, (_asteroidArrayPtr)
+	ld	(ix + -3), hl
+	call	_random
+	ld	bc, 3
+	call	__iand
+	call	__imulu
+	push	hl
+	pop	de
+	ld	hl, L___const.spawnAsteroid.asteroidSkins
+	add	hl, de
+	ld	de, (hl)
+	ld	bc, 14
+	ld	hl, (ix + -3)
+	call	__imulu
+	push	hl
+	pop	bc
+	ld	iy, _asteroids
+	add	iy, bc
+	ld	(iy), de
+	ld	hl, (ix + 6)
+	ld	(iy + 3), hl
+	ld	hl, (ix + 9)
+	ld	(iy + 6), hl
+	ld	hl, (ix + 12)
+	ld	(iy + 9), hl
+	ld	(iy + 12), 1
+	ld	(iy + 13), 1
+	ld	de, (_asteroidArrayPtr)
+	ld	bc, 19
+	push	de
+	pop	hl
+	or	a, a
+	sbc	hl, bc
+	ld	hl, 0
+	call	__setflag
+	jq	p, BB0_2
+	inc	de
+	ex	de, hl
+BB0_2:
+	ld	(_asteroidArrayPtr), hl
+	pop	hl
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	_resetTimer
+_resetTimer:
+	call	__frameset0
+	call	_random
+	ld	bc, 65535
+	xor	a, a
+	call	__land
+	push	hl
+	pop	bc
+	ld	a, e
+	call	__ultof
+	push	bc
+	pop	iy
+	ld	d, a
+	ld	bc, (ix + 12)
+	ld	a, (ix + 15)
+	ld	hl, (ix + 6)
+	ld	e, (ix + 9)
+	call	__fsub
+	lea	hl, iy + 0
+	ld	e, d
+	call	__fmul
+	ld	hl, 8388352
+	ld	e, 71
+	call	__fdiv
+	ld	hl, (ix + 6)
+	ld	e, (ix + 9)
+	call	__fadd
+	push	bc
+	pop	de
+	ld.sis	hl, 4
+	ld	iy, -917452
+	ld	(iy), l
+	ld	(iy + 1), h
+	ld	hl, -917456
+	push	de
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
+	ld	l, e
+	ld	h, d
+	pop	de
+	ld.sis	bc, -2
+	call	__sand
+	ld	iy, -917456
+	ld	(iy), l
+	ld	(iy + 1), h
+	push	de
+	pop	bc
+	or	a, a
+	sbc	hl, hl
+	ld	e, 71
+	call	__fmul
+	call	__ftol
+	push	bc
+	pop	hl
+	push	bc
+	pop	iy
+	add	iy, iy
+	sbc	hl, hl
+	ld	a, l
+	ld	iy, -917504
+	ld	(iy), bc
+	ld	(iy + 3), a
+	ld	hl, -917456
+	push	de
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
+	ld	l, e
+	ld	h, d
+	pop	de
+	ld.sis	bc, -520
+	call	__sand
+	ld.sis	de, 7
+	add.sis	hl, de
+	ld	iy, -917456
+	ld	(iy), l
+	ld	(iy + 1), h
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	_main
+_main:
+	ld	hl, -158
+	call	__frameset
+	ld	iy, L___const.main.titleText
+	ld	de, 11
+	lea	bc, ix + -17
+	lea	hl, ix + -40
+	ld	(ix + -3), bc
+	push	ix
+	ld	bc, -134
+	add	ix, bc
+	ld	(ix + 0), hl
+	pop	ix
+	lea	hl, ix + -72
+	push	ix
+	ld	bc, -137
+	add	ix, bc
+	ld	(ix + 0), hl
+	pop	ix
+	lea	hl, ix + -82
+	push	ix
+	ld	bc, -149
+	add	ix, bc
+	ld	(ix + 0), hl
+	pop	ix
+	lea	hl, ix + -102
+	ld	(ix + -126), hl
+	lea	hl, ix + -105
+	push	ix
+	ld	bc, -146
+	add	ix, bc
+	ld	(ix + 0), hl
+	pop	ix
+	push	de
+	push	iy
+	ld	bc, (ix + -3)
+	ld	de, -143
+	lea	hl, ix + 0
+	add	hl, de
+	ld	(hl), bc
+	push	bc
+	call	_memcpy
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, 23
+	push	hl
+	ld	hl, L___const.main.subtitleText
+	push	hl
+	ld	bc, -134
+	lea	hl, ix + 0
+	add	hl, bc
+	ld	hl, (hl)
+	push	hl
+	call	_memcpy
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, 32
+	push	hl
+	ld	hl, L___const.main.subSubtitleText
+	push	hl
+	ld	bc, -137
+	lea	hl, ix + 0
+	add	hl, bc
+	ld	hl, (hl)
+	push	hl
+	call	_memcpy
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, 10
+	push	hl
+	ld	hl, L___const.main.scoreTextFormat
+	push	hl
+	ld	bc, -149
+	lea	hl, ix + 0
+	add	hl, bc
+	ld	hl, (hl)
+	push	hl
+	call	_memcpy
+	pop	hl
+	pop	hl
+	pop	hl
+	call	_gfx_Begin
+	ld	hl, 1
+	push	hl
+	call	_gfx_SetDraw
+	pop	hl
+	or	a, a
+	sbc	hl, hl
+	push	hl
+	ld	hl, 130
+	push	hl
+	ld	hl, _global_palette
+	push	hl
+	call	_gfx_SetPalette
+	pop	hl
+	pop	hl
+	pop	hl
+	or	a, a
+	sbc	hl, hl
+	push	hl
+	call	_gfx_SetTransparentColor
+	pop	hl
+	ld	a, 1
+BB2_1:
+	cp	a, 1
+	jq	nz, BB2_9
+	ld	hl, 1
+	push	hl
+	call	_gfx_FillScreen
+	pop	hl
+	ld	hl, 2
+	push	hl
+	call	_gfx_SetTextFGColor
+	pop	hl
+	ld	hl, 2
+	push	hl
+	push	hl
+	call	_gfx_SetTextScale
+	pop	hl
+	pop	hl
+	ld	bc, -143
+	lea	hl, ix + 0
+	add	hl, bc
+	ld	hl, (hl)
+	push	hl
+	call	_gfx_GetStringWidth
+	push	hl
+	pop	de
+	pop	hl
+	ld	hl, 320
+	or	a, a
+	sbc	hl, de
+	ld	a, 1
+	ld	c, a
+	call	__ishru
+	ld	de, 100
+	push	de
+	push	hl
+	ld	de, -143
+	lea	hl, ix + 0
+	add	hl, de
+	ld	hl, (hl)
+	push	hl
+	call	_gfx_PrintStringXY
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, 1
+	push	hl
+	push	hl
+	call	_gfx_SetTextScale
+	pop	hl
+	pop	hl
+	ld	de, -134
+	lea	hl, ix + 0
+	add	hl, de
+	ld	hl, (hl)
+	push	hl
+	call	_gfx_GetStringWidth
+	push	hl
+	pop	de
+	pop	hl
+	ld	hl, 320
+	or	a, a
+	sbc	hl, de
+	ld	c, 1
+	call	__ishru
+	ld	de, 130
+	push	de
+	push	hl
+	ld	de, -134
+	lea	hl, ix + 0
+	add	hl, de
+	ld	hl, (hl)
+	push	hl
+	call	_gfx_PrintStringXY
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	de, -137
+	lea	hl, ix + 0
+	add	hl, de
+	ld	hl, (hl)
+	push	hl
+	call	_gfx_GetStringWidth
+	push	hl
+	pop	de
+	pop	hl
+	ld	hl, 320
+	or	a, a
+	sbc	hl, de
+	ld	c, 1
+	call	__ishru
+	ld	de, 140
+	push	de
+	push	hl
+	ld	de, -137
+	lea	hl, ix + 0
+	add	hl, de
+	ld	hl, (hl)
+	push	hl
+	call	_gfx_PrintStringXY
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, 1
+	push	hl
+	call	_gfx_Blit
+	pop	hl
+	ld	hl, 100
+	push	hl
+	call	_delay
+	pop	hl
+	ld	a, 1
+BB2_3:
+	cp	a, 1
+	jq	nz, BB2_10
+	call	_os_GetCSC
+	cp	a, 15
+	ld	l, 10
+	jq	z, BB2_6
+	ld	l, 1
+BB2_6:
+	cp	a, 48
+	ld	a, 2
+	jq	z, BB2_3
+	ld	a, l
+	jq	BB2_3
+BB2_9:
+	cp	a, 10
+	jq	z, BB2_73
+BB2_10:
+	ld	(ix + -111), a
+	ld	hl, 1
+	push	hl
+	call	_gfx_FillScreen
+	pop	hl
+	ld	a, (_astronaut_data+1)
+	ld	e, a
+	ld	d, 0
+	ld.sis	hl, 224
+	or	a, a
+	sbc.sis	hl, de
+	ld.sis	bc, 2
+	call	__sdivs
+	ld.sis	de, 16
+	add.sis	hl, de
+	ld	(ix + -108), l
+	ld	(ix + -107), h
+	ld	hl, 20
+	push	hl
+	or	a, a
+	sbc	hl, hl
+	push	hl
+	ld	hl, (ix + -126)
+	push	hl
+	call	_memset
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	iy, 0
+BB2_11:
+	lea	hl, iy + 0
+	ld	de, 3920
+	or	a, a
+	sbc	hl, de
+	jq	z, BB2_13
+	lea	de, iy + 0
+	lea	bc, iy + 0
+	ld	iy, _asteroids
+	add	iy, de
+	ld	de, -146
+	lea	hl, ix + 0
+	add	hl, de
+	ld	hl, (hl)
+	ld	(iy), hl
+	or	a, a
+	sbc	hl, hl
+	ld	(iy + 3), hl
+	ld	de, 250
+	ld	(iy + 6), de
+	ld	(iy + 9), hl
+	ld	(iy + 12), 0
+	ld	(iy + 13), 0
+	push	bc
+	pop	iy
+	ld	de, 14
+	add	iy, de
+	jq	BB2_11
+BB2_13:
+	ld	e, (ix + -108)
+	ld	d, (ix + -107)
+	ld	a, d
+	ld	l, a
+	rlc	l
+	sbc	hl, hl
+	ld	h, a
+	ld	l, e
+	ld	(ix + -108), hl
+	ld	hl, 1
+	push	hl
+	call	_gfx_SetColor
+	pop	hl
+	ld	hl, -851900
+	push	hl
+	pop	iy
+	ld	hl, (iy)
+	ld	a, (iy + 3)
+	ld	e, a
+	push	de
+	push	hl
+	call	_srandom
+	pop	hl
+	pop	hl
+	ld	hl, 32768
+	ld	de, -917500
+	push	de
+	pop	iy
+	ld	(iy), hl
+	xor	a, a
+	ld	(iy + 3), a
+	ld	hl, 63
+	ex	de, hl
+	push	de
+	ld	hl, -8388608
+	push	hl
+	push	de
+	or	a, a
+	sbc	hl, hl
+	push	hl
+	call	_resetTimer
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	iy, 0
+	lea	de, iy + 0
+	ld	c, 0
+	ld	hl, -1
+	ld	(ix + -123), hl
+	ld	(ix + -117), iy
+	ld	a, (ix + -111)
+BB2_14:
+	cp	a, 2
+	jq	nz, BB2_66
+	ld	(ix + -120), c
+	ld	(ix + -111), de
+	call	_kb_Scan
+	ld	hl, -720866
+	push	de
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
+	ld	l, e
+	ld	h, d
+	pop	de
+	ld	a, l
+	cp	a, 1
+	ld	de, -6291456
+	ld	(ix + -114), de
+	ld	d, 64
+	jq	z, BB2_24
+	ld	a, l
+	cp	a, 8
+	ld	hl, -6291456
+	ld	(ix + -114), hl
+	ld	d, -64
+	jq	z, BB2_24
+	ld	iy, 5033165
+	lea	hl, iy + 0
+	ld	d, 62
+	ld	e, d
+	ld	bc, (ix + -111)
+	ld	a, (ix + -120)
+	call	__fcmp
+	jq	p, BB2_19
+	lea	hl, iy + 0
+	ld	e, -66
+	jq	BB2_23
+BB2_19:
+	push	bc
+	pop	hl
+	ld	e, a
+	lea	bc, iy + 0
+	ld	a, d
+	call	__fcmp
+	ld	a, 1
+	jq	p, BB2_21
+	ld	a, 0
+BB2_21:
+	bit	0, a
+	ld	hl, 0
+	ld	(ix + -114), hl
+	ld	d, 0
+	jq	nz, BB2_24
+	ld	bc, (ix + -111)
+	ld	a, (ix + -120)
+	ld	hl, 5033165
+	ld	e, 62
+BB2_23:
+	call	__fadd
+	ld	(ix + -114), bc
+	ld	d, a
+BB2_24:
+	ld	hl, -720868
+	push	de
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
+	ld	l, e
+	ld	h, d
+	pop	de
+	ld	a, l
+	bit	6, a
+	ld	a, 2
+	jq	z, BB2_26
+	ld	a, 1
+BB2_26:
+	ld	(ix + -111), a
+	ld	bc, (ix + -108)
+	push	bc
+	pop	hl
+	push	bc
+	pop	iy
+	add	iy, iy
+	sbc	hl, hl
+	ld	a, l
+	call	__ltof
+	push	bc
+	pop	hl
+	ld	e, a
+	ld	bc, (ix + -114)
+	ld	(ix + -3), bc
+	ld	bc, -130
+	lea	iy, ix + 0
+	add	iy, bc
+	ld	(iy + 0), d
+	ld	a, d
+	ld	bc, (ix + -3)
+	call	__fadd
+	call	__ftol
+	ld	a, (_astronaut_data+1)
+	ld	de, 0
+	ld	e, a
+	ld	hl, 240
+	or	a, a
+	sbc	hl, de
+	ld	(ix + -108), hl
+	push	bc
+	pop	hl
+	ld	de, 17
+	or	a, a
+	sbc	hl, de
+	call	__setflag
+	push	bc
+	pop	de
+	jq	p, BB2_28
+	ld	de, 16
+BB2_28:
+	ld	hl, (ix + -108)
+	or	a, a
+	sbc	hl, bc
+	call	__setflag
+	jq	m, BB2_30
+	ld	(ix + -108), de
+BB2_30:
+	ld	hl, -917452
+	push	de
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
+	ld	l, e
+	ld	h, d
+	pop	de
+	ld	a, l
+	bit	2, a
+	jq	z, BB2_32
+	call	_random
+	ld	bc, 175
+	call	__iremu
+	ld	de, 25
+	add	hl, de
+	ld	de, 3
+	push	de
+	push	hl
+	ld	hl, 345
+	push	hl
+	call	_spawnAsteroid
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, 63
+	ex	de, hl
+	push	de
+	ld	hl, -8388608
+	push	hl
+	push	de
+	or	a, a
+	sbc	hl, hl
+	push	hl
+	call	_resetTimer
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+BB2_32:
+	ld	iy, 0
+BB2_33:
+	lea	hl, iy + 0
+	ld	de, 280
+	or	a, a
+	sbc	hl, de
+	jq	z, BB2_44
+	lea	de, iy + 0
+	lea	hl, iy + 0
+	ld	iy, _asteroids
+	lea	bc, iy + 0
+	add	iy, de
+	push	ix
+	ld	de, -129
+	add	ix, de
+	ld	(ix + 0), iy
+	pop	ix
+	ld	a, (iy + 12)
+	or	a, a
+	jq	nz, BB2_36
+	push	hl
+	pop	iy
+	jq	BB2_43
+BB2_36:
+	ld	(ix + -120), hl
+	ex	de, hl
+	push	bc
+	pop	iy
+	add	iy, de
+	ld	de, (iy + 9)
+	ld	hl, (iy + 3)
+	or	a, a
+	sbc	hl, de
+	push	hl
+	pop	de
+	ld	(iy + 3), de
+	ld	bc, -25
+	or	a, a
+	sbc	hl, bc
+	call	__setflag
+	jq	p, BB2_38
+	ld	bc, -129
+	lea	hl, ix + 0
+	add	hl, bc
+	ld	iy, (hl)
+	ld	(iy + 12), 0
+	jq	BB2_39
+BB2_38:
+	ex	de, hl
+	ld	de, 80
+	or	a, a
+	sbc	hl, de
+	call	__setflag
+	jq	p, BB2_42
+BB2_39:
+	ld	de, (ix + -120)
+	ld	iy, _asteroids
+	add	iy, de
+	ld	a, (iy + 13)
+	or	a, a
+	jq	z, BB2_42
+	ld	de, 10
+	ld	hl, (ix + -117)
+	add	hl, de
+	ld	(ix + -117), hl
+	ld	(iy + 13), 0
+BB2_42:
+	ld	iy, (ix + -120)
+BB2_43:
+	ld	de, 14
+	add	iy, de
+	jq	BB2_33
+BB2_44:
+	ld	hl, 224
+	push	hl
+	ld	hl, 320
+	push	hl
+	ld	hl, 16
+	push	hl
+	or	a, a
+	sbc	hl, hl
+	push	hl
+	call	_gfx_FillRectangle
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, (ix + -108)
+	push	hl
+	ld	hl, 80
+	push	hl
+	ld	hl, _astronaut_data
+	push	hl
+	call	_gfx_TransparentSprite
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	iy, 0
+BB2_45:
+	lea	hl, iy + 0
+	ld	de, 280
+	or	a, a
+	sbc	hl, de
+	jq	z, BB2_49
+	ld	(ix + -120), iy
+	lea	de, iy + 0
+	ld	iy, _asteroids
+	add	iy, de
+	ld	a, (iy + 12)
+	or	a, a
+	jq	z, BB2_48
+	ld	de, (ix + -120)
+	ld	iy, _asteroids
+	add	iy, de
+	ld	hl, (iy)
+	ld	de, (iy + 3)
+	ld	bc, (iy + 6)
+	push	bc
+	push	de
+	push	hl
+	call	_gfx_TransparentSprite
+	pop	hl
+	pop	hl
+	pop	hl
+BB2_48:
+	ld	de, 14
+	ld	iy, (ix + -120)
+	add	iy, de
+	jq	BB2_45
+BB2_49:
+	ld	hl, (ix + -117)
+	ld	de, (ix + -123)
+	or	a, a
+	sbc	hl, de
+	jq	z, BB2_51
+	ld	hl, 1
+	push	hl
+	call	_gfx_SetColor
+	pop	hl
+	ld	hl, 15
+	push	hl
+	ld	hl, 320
+	push	hl
+	or	a, a
+	sbc	hl, hl
+	push	hl
+	push	hl
+	call	_gfx_FillRectangle
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, 2
+	push	hl
+	call	_gfx_SetColor
+	pop	hl
+	ld	hl, 320
+	push	hl
+	ld	hl, 15
+	push	hl
+	or	a, a
+	sbc	hl, hl
+	push	hl
+	call	_gfx_HorizLine
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, 1
+	push	hl
+	call	_gfx_SetColor
+	pop	hl
+	ld	hl, (ix + -117)
+	push	hl
+	ld	bc, -149
+	lea	hl, ix + 0
+	add	hl, bc
+	ld	hl, (hl)
+	push	hl
+	ld	hl, (ix + -126)
+	push	hl
+	call	_sprintf
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, 3
+	push	hl
+	push	hl
+	ld	hl, (ix + -126)
+	push	hl
+	call	_gfx_PrintStringXY
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, (ix + -117)
+	ld	(ix + -123), hl
+BB2_51:
+	ld	hl, 1
+	push	hl
+	call	_gfx_Blit
+	pop	hl
+	ld	de, 0
+	xor	a, a
+BB2_52:
+	push	de
+	pop	hl
+	ld	bc, 20
+	or	a, a
+	sbc	hl, bc
+	jq	z, BB2_63
+	push	de
+	pop	hl
+	ld	bc, 14
+	call	__imulu
+	push	hl
+	pop	bc
+	ld	hl, _asteroids
+	push	hl
+	pop	iy
+	add	iy, bc
+	ld	bc, -140
+	lea	hl, ix + 0
+	add	hl, bc
+	ld	(hl), iy
+	ld	hl, (iy + 3)
+	ld	(ix + -120), hl
+	ld	iy, 0
+BB2_54:
+	lea	hl, iy + 0
+	ld	bc, 36
+	or	a, a
+	sbc	hl, bc
+	jq	z, BB2_62
+	ld	bc, -131
+	lea	hl, ix + 0
+	add	hl, bc
+	ld	(hl), a
+	push	ix
+	ld	bc, -129
+	add	ix, bc
+	ld	(ix + 0), iy
+	pop	ix
+	lea	bc, iy + 0
+	ld	iy, L___const.main.astroHitboxes
+	add	iy, bc
+	ld	hl, (iy)
+	ld	bc, 80
+	add	hl, bc
+	ld	bc, (iy + 6)
+	push	hl
+	pop	iy
+	add	hl, bc
+	push	hl
+	pop	bc
+	ld	hl, (ix + -120)
+	or	a, a
+	sbc	hl, bc
+	call	__setflag
+	ld	a, 0
+	jq	p, BB2_61
+	ld	bc, -140
+	lea	hl, ix + 0
+	add	hl, bc
+	ld	hl, (hl)
+	ld	hl, (hl)
+	push	ix
+	ld	bc, -152
+	add	ix, bc
+	ld	(ix + 0), hl
+	pop	ix
+	ld	a, (hl)
+	ld	bc, 0
+	ld	c, a
+	ld	hl, (ix + -120)
+	add	hl, bc
+	push	hl
+	pop	bc
+	lea	hl, iy + 0
+	or	a, a
+	sbc	hl, bc
+	call	__setflag
+	ld	a, 0
+	jq	p, BB2_61
+	ld	bc, -140
+	lea	hl, ix + 0
+	add	hl, bc
+	ld	iy, (hl)
+	ld	hl, (iy + 6)
+	ld	bc, -155
+	lea	iy, ix + 0
+	add	iy, bc
+	ld	(iy + 0), hl
+	ld	(ix + -3), de
+	ld	de, -129
+	lea	hl, ix + 0
+	add	hl, de
+	ld	bc, (hl)
+	ld	iy, L___const.main.astroHitboxes
+	add	iy, bc
+	ld	hl, (iy + 3)
+	ld	bc, (ix + -108)
+	add	hl, bc
+	ld	bc, (iy + 9)
+	ld	de, -152
+	lea	iy, ix + 0
+	add	iy, de
+	ld	iy, (iy + 0)
+	push	ix
+	ld	de, -158
+	add	ix, de
+	ld	(ix + 0), hl
+	pop	ix
+	add	hl, bc
+	push	hl
+	pop	bc
+	ld	de, -155
+	lea	hl, ix + 0
+	add	hl, de
+	ld	hl, (hl)
+	or	a, a
+	sbc	hl, bc
+	call	__setflag
+	ld	a, 0
+	ld	de, (ix + -3)
+	jq	p, BB2_61
+	ld	a, (iy + 1)
+	ld	bc, 0
+	ld	c, a
+	ld	(ix + -3), de
+	ld	de, -155
+	lea	hl, ix + 0
+	add	hl, de
+	ld	hl, (hl)
+	add	hl, bc
+	push	hl
+	pop	bc
+	ld	de, -158
+	lea	hl, ix + 0
+	add	hl, de
+	ld	hl, (hl)
+	or	a, a
+	sbc	hl, bc
+	call	__setflag
+	ld	a, 1
+	ld	de, (ix + -3)
+	jq	m, BB2_61
+	ld	a, 0
+BB2_61:
+	and	a, 1
+	ld	l, a
+	ld	bc, -131
+	lea	iy, ix + 0
+	add	iy, bc
+	ld	a, (iy + 0)
+	add	a, l
+	ld	bc, 12
+	ld	(ix + -3), de
+	ld	de, -129
+	lea	hl, ix + 0
+	add	hl, de
+	ld	iy, (hl)
+	add	iy, bc
+	ld	de, (ix + -3)
+	jq	BB2_54
+BB2_62:
+	inc	de
+	jq	BB2_52
+BB2_63:
+	or	a, a
+	ld	a, (ix + -111)
+	jq	z, BB2_65
+	ld	a, 3
+BB2_65:
+	ld	de, (ix + -114)
+	ld	(ix + -3), de
+	ld	de, -130
+	lea	hl, ix + 0
+	add	hl, de
+	ld	c, (hl)
+	ld	de, (ix + -3)
+	jq	BB2_14
+BB2_66:
+	ld	iy, -917456
+	ld	l, (iy)
+	ld	h, (iy + 1)
+	ld.sis	bc, -2
+	call	__sand
+	ld	(iy), l
+	ld	(iy + 1), h
+BB2_67:
+	cp	a, 3
+	jq	nz, BB2_1
+	call	_os_GetCSC
+	cp	a, 15
+	ld	l, 1
+	jq	z, BB2_70
+	ld	l, 3
+BB2_70:
+	cp	a, 48
+	ld	a, 2
+	jq	z, BB2_67
+	ld	a, l
+	jq	BB2_67
+BB2_73:
+	call	_gfx_End
+	or	a, a
+	sbc	hl, hl
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.bss,"aw",@nobits
+	public	_asteroidArrayPtr
+_asteroidArrayPtr:
+	rb	3
+
+	section	.rodata,"a",@progbits
+	private	L___const.spawnAsteroid.asteroidSkins
+L___const.spawnAsteroid.asteroidSkins:
+	dl	_asteroid10_data
+	dl	_asteroid15_data
+	dl	_asteroid20_data
+	dl	_asteroid25_data
+
+	section	.bss,"aw",@nobits
+	public	_asteroids
+_asteroids:
+	rb	280
+
+	section	.rodata,"a",@progbits
+	private	L___const.main.titleText
+L___const.main.titleText:
+	db	"PLANETOIDS",000o
+
+	section	.rodata,"a",@progbits
+	private	L___const.main.subtitleText
+L___const.main.subtitleText:
+	db	"PRESS [alpha] TO START",000o
+
+	section	.rodata,"a",@progbits
+	private	L___const.main.subSubtitleText
+L___const.main.subSubtitleText:
+	db	"PRESS [clear] TO RETURN TO MENU",000o
+
+	section	.rodata,"a",@progbits
+	private	L___const.main.scoreTextFormat
+L___const.main.scoreTextFormat:
+	db	"SCORE: %d",000o
+
+	section	.rodata,"a",@progbits
+	private	L___const.main.astroHitboxes
+L___const.main.astroHitboxes:
+	dl	26
+	dl	1
+	dl	13
+	dl	13
+	dl	8
+	dl	10
+	dl	19
+	dl	23
+	dl	10
+	dl	33
+	dl	11
+	dl	13
+
+	ident	"clang version 12.0.0 (https://github.com/jacobly0/llvm-project 170be88120e3aa88c20eea5615ba76b8f1d6c647)"
+	extern	_random
+	extern	_memset
+	extern	__Unwind_SjLj_Register
+	extern	__frameset
+	extern	_asteroid10_data
+	extern	_global_palette
+	extern	_gfx_SetTransparentColor
+	extern	_gfx_SetTextFGColor
+	extern	_sprintf
+	extern	_gfx_Begin
+	extern	__fadd
+	extern	_kb_Scan
+	extern	_asteroid15_data
+	extern	_gfx_GetStringWidth
+	extern	_gfx_SetPalette
+	extern	_gfx_HorizLine
+	extern	_astronaut_data
+	extern	__sand
+	extern	__ultof
+	extern	__ishru
+	extern	_memcpy
+	extern	__fmul
+	extern	__ftol
+	extern	_gfx_SetDraw
+	extern	__setflag
+	extern	__sdivs
+	extern	_gfx_FillScreen
+	extern	__Unwind_SjLj_Unregister
+	extern	_gfx_Blit
+	extern	_srandom
+	extern	__iand
+	extern	_gfx_FillRectangle
+	extern	__iremu
+	extern	__fdiv
+	extern	__imulu
+	extern	_gfx_SetColor
+	extern	__land
+	extern	_delay
+	extern	__ltof
+	extern	_asteroid20_data
+	extern	_gfx_PrintStringXY
+	extern	_os_GetCSC
+	extern	_gfx_End
+	extern	__fcmp
+	extern	__frameset0
+	extern	_gfx_TransparentSprite
+	extern	__fsub
+	extern	_asteroid25_data
+	extern	_gfx_SetTextScale

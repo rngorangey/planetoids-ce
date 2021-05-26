@@ -1,0 +1,40 @@
+# output: c
+  # include-file: gfx.h
+  # palettes:
+    # - mypalette
+  # converts:
+    # - myimages
+
+# palette: mypalette  # fixed-color: {index:0, r:0, g:0, b:255} # blue, for transparency  # fixed-color: {index:1, r:0, g:0, b:0} # black
+  # images: automatic
+# convert: myimages
+  # palette: mypalette  # transparent-color-index: 0
+  # images:
+# #    - test.png    # - astronaut.png    # - asteroid10.png    # - asteroid15.png    # - asteroid20.png    # - asteroid25.png
+
+palettes:
+  - name: global_palette
+    fixed-entries:
+      - color: {index: 0, r: 0, g: 0, b: 255} # blue, for transparency
+      - color: {index: 1, r: 0, g: 0, b: 0} # black
+      - color: {index: 2, r: 255, g: 255, b: 255} # white
+    images: automatic
+
+converts:
+  - name: sprites
+    palette: global_palette
+    transparent-color-index: 0
+    images:
+        - astronaut.png
+        - asteroid10.png
+        - asteroid15.png
+        - asteroid20.png
+        - asteroid25.png
+
+outputs:
+  - type: c
+    include-file: gfx.h
+    palettes:
+      - global_palette
+    converts:
+      - sprites
