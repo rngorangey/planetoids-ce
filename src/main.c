@@ -1,59 +1,4 @@
-#include <string.h>
-#include <tice.h>
-#include <graphx.h>
-#include <keypadc.h>
-#include <debug.h>
-
-#include "gfx/gfx.h"
-
-#define LCDX 320
-#define LCDY 240
-#define SCOREBAR_HEIGHT 16
-#define PLAYFIELD_Y (LCDY-SCOREBAR_HEIGHT)
-
-#define BLACK 1
-#define WHITE 2
-
-#define TIMER_FREQ 32768.0 // Hz
-#define MAIN_MENU 1
-#define GAME_RUNNING 2
-#define GAME_OVER 3
-#define CLOSE 10
-
-#define AST_SKINS 4
-#define AST_SEC 1.0
-#define MAX_ASTEROIDS 20
-#define MAX_AST_SIZE 25
-#define ASTRO_HITBOXES 3
-#define AST_SCORE_VALUE 10
-
-//#define constrain(x, upper, lower) ((x > upper) ? upper : ((y < lower) ? (lower) : y));
-// ---------------------------------------------------------
-
-struct Asteroid {
-	gfx_sprite_t* sprite;
-	int x;
-	int y;
-	int vel;
-	uint8_t active;	/* determines whether asteroids are moved and rendered each cycle;
-						asteroid can be overwritten when 0*/
-	uint8_t scorable;
-};
-
-// list of asteroids currently on screen
-	/*  pointer wraps around to 0 after reaching the end; no more than 20 asteroids can be on screen at once. 
-		older asteroids just get overwritten and appear to get deleted if more than 20 are on screen*/
-
-struct Asteroid asteroids[MAX_ASTEROIDS];
-int asteroidArrayPtr = 0;
-
-//rectangle format required by gfx_CheckRectangleHotspot
-struct Hitbox {	
-	int x;	// x and y relative to astronaut's x and y
-	int y;
-	int width;
-	int height;
-};
+#include "main.h"
 
 void spawnAsteroid(int x, int y, int vel) {
 	gfx_sprite_t* asteroidSkins[AST_SKINS] = {asteroid10, asteroid15, asteroid20, asteroid25};
@@ -90,10 +35,6 @@ int main() {
 	uint16_t i, j;
 	float 	moveVel, vel, drag, minAstSec, maxAstSec;
 	uint8_t key, gameState = MAIN_MENU, collided;
-	const char titleText[] = "PLANETOIDS";
-	const char subtitleText[] = "PRESS [alpha] TO START";
-	const char subSubtitleText[] = "PRESS [clear] TO RETURN TO MENU";
-	const char scoreTextFormat[] = "SCORE: %d";
 	char scoreText[ sizeof(scoreTextFormat)+10 ];
 	
 	//struct Asteroid* curAst;
@@ -154,7 +95,7 @@ int main() {
 		minAstSec = 0.5;
 		maxAstSec = 1.0;
 		score = 0,
-		prevScore = -1;
+		prevScore = -1;	// setting this to -1 rather than 0 makes it draw the score when the game begins
 	
 		memset(scoreText, '\0', sizeof(scoreText));
 		
@@ -173,8 +114,8 @@ int main() {
 			// Check for keys pressed -------------------------
 			kb_Scan();
 			
-			switch (key = kb_Data[7]) {
-				case kb_Down:
+			switch (kb_Data[7]) {
+				case kb_Down:	// can't do it properly since switches require integer constants becauuuuse reasons
 					vel = moveVel;
 					break;
 				case kb_Up:
@@ -189,9 +130,7 @@ int main() {
 							0;
 			}
 			
-			if (kb_Data[6] & kb_Clear) {
-				gameState = MAIN_MENU;
-			}
+			if (kb_isDown(kb_Clear)) gameState = MAIN_MENU
 			
 			// Move astronaut ---------------------------------
 			astro_y += vel;
