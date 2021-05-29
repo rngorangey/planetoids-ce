@@ -4,7 +4,6 @@
 #include <keypadc.h>
 #include <debug.h>
 
-
 #include "main.h"
 
 void spawnAsteroid(int x, int y, int vel) {
@@ -48,7 +47,7 @@ int main() {
 	
 	gfx_UninitedSprite(emptySprite, 1, 1);
 	
-	struct Hitbox astroHitboxes[] = {
+	struct Hitbox astronautHitboxes[] = {
 		(struct Hitbox) { .x = 26,	.y = 1,  .width = 13, .height = 13 },	// head
 		(struct Hitbox) { .x = 8,	.y = 10, .width = 19, .height = 23 },	// body
 		(struct Hitbox) { .x = 10,	.y = 33, .width = 11, .height = 13 }
@@ -92,7 +91,7 @@ int main() {
 		
 		// ----------------------------------------------------------------------------
 		
-	// Initialize stuff
+		// Initialize stuff
 		gfx_FillScreen(BLACK);
 		
 		astro_y = (PLAYFIELD_HEIGHT - astronaut->height)/2 + UPPER_BOUND;
@@ -140,7 +139,7 @@ int main() {
 			astro_y += vel;
 			
 				// if astronaut's position is going to be outside of the screen, constrain it
-			if 		(astro_y > LOWER_BOUND-astronaut->height) {
+			if (astro_y > LOWER_BOUND-astronaut->height) {
 				astro_y = LOWER_BOUND-astronaut->height;
 				acc = vel = 0;
 			} else if (astro_y < UPPER_BOUND) {
@@ -212,12 +211,12 @@ int main() {
 			collided = 0;
 			
 			for (j=0; j<MAX_ASTEROIDS; j++) {
-				for (i=0; i<ASTRO_HITBOXES; i++) {
+				for (i=0; i<ASTRONAUT_HITBOXES; i++) {
 					collided += gfx_CheckRectangleHotspot(
-						astro_x + astroHitboxes[i].x ,
-						astro_y + astroHitboxes[i].y ,
-						astroHitboxes[i].width ,
-						astroHitboxes[i].height ,
+						astro_x + astronautHitboxes[i].x ,
+						astro_y + astronautHitboxes[i].y ,
+						astronautHitboxes[i].width ,
+						astronautHitboxes[i].height ,
 						
 						asteroids[j].x ,
 						asteroids[j].y ,
@@ -227,10 +226,10 @@ int main() {
 					
 					//dbg_sprintf(dbgout, "%d\n", collided);
 					
-					/* dbg_sprintf(dbgout, "%d\n", astro_x + astroHitboxes[i].x);
-					dbg_sprintf(dbgout, "%d\n", astro_y + astroHitboxes[i].y );
-					dbg_sprintf(dbgout, "%d\n",	astroHitboxes[i].width );
-					dbg_sprintf(dbgout, "%d\n\n",	astroHitboxes[i].height );
+					/* dbg_sprintf(dbgout, "%d\n", astro_x + astronautHitboxes[i].x);
+					dbg_sprintf(dbgout, "%d\n", astro_y + astronautHitboxes[i].y );
+					dbg_sprintf(dbgout, "%d\n",	astronautHitboxes[i].width );
+					dbg_sprintf(dbgout, "%d\n\n",	astronautHitboxes[i].height );
 						
 					dbg_sprintf(dbgout, "%d\n",	asteroids[j].x );
 					dbg_sprintf(dbgout, "%d\n",	asteroids[j].y );
