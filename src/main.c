@@ -131,14 +131,6 @@ int main() {
 					break;
 				default:
 					acc = 0;
-					
-					//we're in space, why is there drag?
-					/* // apply drag to the velocity to slow the astronaut down if no key is pressed, until a certain point where it's considered to be zero
-					vel = (vel > drag) ? 
-						vel - drag : 
-						(vel < drag) ?
-							vel + drag :
-							0; */
 			}
 			
 			if (kb_IsDown(kb_KeyClear)) gameState = MAIN_MENU;
@@ -157,10 +149,6 @@ int main() {
 			}
 			
 			dbg_printf("acc: %f\n vel: %f\n\n", acc, vel);
-			
-			/* astro_y = (int) (astro_y > LOWER_BOUND-astronaut->height) ?
-				LOWER_BOUND-astronaut->height : 
-				(astro_y < UPPER_BOUND) ? UPPER_BOUND : astro_y; */
 			
 			// Spawn an asteroid ----------------------------- (change to random interval at some point?)
 			
