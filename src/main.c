@@ -1,3 +1,10 @@
+#include <string.h>
+#include <tice.h>
+#include <graphx.h>
+#include <keypadc.h>
+#include <debug.h>
+
+
 #include "main.h"
 
 void spawnAsteroid(int x, int y, int vel) {
@@ -33,7 +40,7 @@ int main() {
 	int astro_y, score, prevScore; 
 		//astroOffset = -(astronaut->height/2);
 	uint16_t i, j;
-	float 	moveVel, vel, drag, minAstSec, maxAstSec;
+	float 	moveAcc, acc, vel, drag, minAstSec, maxAstSec;
 	uint8_t key, gameState = MAIN_MENU, collided;
 	char scoreText[ sizeof(scoreTextFormat)+10 ];
 	
@@ -88,8 +95,9 @@ int main() {
 	// Initialize stuff
 		gfx_FillScreen(BLACK);
 		
-		astro_y = (PLAYFIELD_Y - astronaut->height)/2 + SCOREBAR_HEIGHT;
-		moveVel = 5;
+		astro_y = (PLAYFIELD_HEIGHT - astronaut->height)/2 + UPPER_BOUND;
+		moveAcc = 0.5;
+		acc = 0;
 		vel = 0.0;
 		drag = 0.2;
 		minAstSec = 0.5;
@@ -101,7 +109,7 @@ int main() {
 		
 		// Initialize asteroid array so it's not full of garbage that causes the game to end immediately
 		for (i=0; i<sizeof(asteroids); i++) {
-			asteroids[i] = (struct Asteroid) {emptySprite, 0, LCDY+10, 0, 0, 0};
+			asteroids[i] = (struct Asteroid) {emptySprite, 0, LOWER_BOUND+10, 0, 0, 0};
 		}
 		gfx_SetColor(BLACK);
 		
@@ -116,35 +124,50 @@ int main() {
 			
 			switch (kb_Data[7]) {
 				case kb_Down:	// can't do it properly since switches require integer constants becauuuuse reasons
-					vel = moveVel;
+					acc = (acc >= 0) ? moveAcc : 0;
 					break;
 				case kb_Up:
-					vel = -moveVel;
+					acc = (acc <= 0) ? -moveAcc : 0;
 					break;
 				default:
-					// apply drag to the velocity to slow the astronaut down if no key is pressed, until a certain point where it's considered to be zero
+					acc = 0;
+					
+					//we're in space, why is there drag?
+					/* // apply drag to the velocity to slow the astronaut down if no key is pressed, until a certain point where it's considered to be zero
 					vel = (vel > drag) ? 
 						vel - drag : 
 						(vel < drag) ?
 							vel + drag :
-							0;
+							0; */
 			}
 			
-			if (kb_isDown(kb_Clear)) gameState = MAIN_MENU
+			if (kb_IsDown(kb_KeyClear)) gameState = MAIN_MENU;
 			
 			// Move astronaut ---------------------------------
+			vel += acc;
 			astro_y += vel;
+			
 				// if astronaut's position is going to be outside of the screen, constrain it
-			astro_y = (int) (astro_y > LCDY-astronaut->height) ?
-				LCDY-astronaut->height : 
-				(astro_y < SCOREBAR_HEIGHT) ? SCOREBAR_HEIGHT : astro_y;
+			if 		(astro_y > LOWER_BOUND-astronaut->height) {
+				astro_y = LOWER_BOUND-astronaut->height;
+				acc = vel = 0;
+			} else if (astro_y < UPPER_BOUND) {
+				astro_y = UPPER_BOUND;
+				acc = vel = 0;
+			}
+			
+			dbg_printf("acc: %f\n vel: %f\n\n", acc, vel);
+			
+			/* astro_y = (int) (astro_y > LOWER_BOUND-astronaut->height) ?
+				LOWER_BOUND-astronaut->height : 
+				(astro_y < UPPER_BOUND) ? UPPER_BOUND : astro_y; */
 			
 			// Spawn an asteroid ----------------------------- (change to random interval at some point?)
 			
 			//dbg_sprintf(dbgout, "timer1 value: %lu\n", timer_GetSafe(1, TIMER_DOWN));
 			//dbg_sprintf(dbgout, "ChkInterrupt: %d\n", timer_ChkInterrupt(1, TIMER_RELOADED));
 			if (timer_ChkInterrupt(1, TIMER_RELOADED)) {
-				spawnAsteroid(LCDX+MAX_AST_SIZE, randInt(0+MAX_AST_SIZE, PLAYFIELD_Y-MAX_AST_SIZE), 3);
+				spawnAsteroid(LCDX+MAX_AST_SIZE, randInt(0+MAX_AST_SIZE, PLAYFIELD_HEIGHT-MAX_AST_SIZE), 3);
 				resetTimer(minAstSec, maxAstSec);
 			}
 			
@@ -169,7 +192,7 @@ int main() {
 			// Rendering --------------------------------------
 			
 				// Background -----------------
-			gfx_FillRectangle(0, SCOREBAR_HEIGHT, LCDX, PLAYFIELD_Y);
+			gfx_FillRectangle(0, UPPER_BOUND, LCDX, PLAYFIELD_HEIGHT);
 			
 				// Astronaut ------------------
 			gfx_TransparentSprite(astronaut, astro_x, astro_y);
@@ -227,6 +250,8 @@ int main() {
 					dbg_sprintf(dbgout, "%d\n\n\n",	asteroids[j].sprite->height); */
 				}
 			}
+			
+			//collided = 0;	// uncomment to disable collision
 			
 			if (collided) gameState = GAME_OVER;
 		

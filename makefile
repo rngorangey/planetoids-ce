@@ -11,7 +11,9 @@ ARCHIVED ?= NO
 CFLAGS ?= -Wall -Wextra -Oz
 CXXFLAGS ?= -Wall -Wextra -Oz
 
-HAS_PRINTF := NO
+# reverse the comment when displaying floats in dbg_printf is needed
+HAS_PRINTF ?= NO
+#USE_FLASH_FUNCTIONS ?= NO	
 
 # ----------------------------
 

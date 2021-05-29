@@ -1,15 +1,11 @@
-#include <string.h>
-#include <tice.h>
-#include <graphx.h>
-#include <keypadc.h>
-#include <debug.h>
-
 #include "gfx/gfx.h"
 
 #define LCDX 320
 #define LCDY 240
 #define SCOREBAR_HEIGHT 16
-#define PLAYFIELD_Y (LCDY-SCOREBAR_HEIGHT)
+#define UPPER_BOUND SCOREBAR_HEIGHT	// for clarity
+#define LOWER_BOUND LCDY
+#define PLAYFIELD_HEIGHT (LCDY-SCOREBAR_HEIGHT)
 
 #define BLACK 1
 #define WHITE 2
@@ -32,7 +28,7 @@
 
 const char titleText[] = "PLANETOIDS";
 const char subtitleText[] = "PRESS [alpha] TO START";
-const char subSubtitleText[] = "PRESS [clear] TO RETURN TO MENU";
+const char subSubtitleText[] = "PRESS [clear] TO RETURN TO TIOS";
 const char scoreTextFormat[] = "SCORE: %d";
 
 struct Asteroid {
