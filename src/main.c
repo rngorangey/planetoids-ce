@@ -8,7 +8,6 @@
 
 void spawnAsteroid(int x, int y, int vel) {
 	gfx_sprite_t* asteroidSkins[AST_SKINS] = {asteroid10, asteroid15, asteroid20, asteroid25};
-	int tmp;
 	
 	asteroids[asteroidArrayPtr] = (struct Asteroid) {	
 		.sprite = 	asteroidSkins[randInt(0, AST_SKINS-1)],
@@ -19,7 +18,7 @@ void spawnAsteroid(int x, int y, int vel) {
 		.scorable = 1
 	};
 	
-	asteroidArrayPtr = ( (tmp = asteroidArrayPtr+1) >= MAX_ASTEROIDS ) ? 0 : tmp ; // wrap array pointer if max number of asteroids reached
+	asteroidArrayPtr = (asteroidArrayPtr >= MAX_ASTEROIDS-1) ? 0 : asteroidArrayPtr+1 ; // wrap array pointer if max number of asteroids reached
 }
 
 void resetTimer(float min, float max) {
@@ -40,7 +39,7 @@ int main() {
 		//astroOffset = -(astronaut->height/2);
 	uint16_t i, j;
 	float 	moveAcc, acc, vel, drag, minAstSec, maxAstSec;
-	uint8_t key, gameState = MAIN_MENU, collided;
+	uint8_t gameState = MAIN_MENU, collided;
 	char scoreText[ sizeof(scoreTextFormat)+10 ];
 	
 	//struct Asteroid* curAst;
