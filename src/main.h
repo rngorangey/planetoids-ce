@@ -14,7 +14,10 @@
 #define MAX_ASTEROIDS 20
 #define MAX_AST_SIZE 25
 #define ASTRONAUT_HITBOXES 3
-#define AST_SCORE_VALUE 10
+#define AST_SCORE_VALUE 5
+#define BONUS_SCORE_RANGE 0.66
+
+#define isBetween(x, min, max) (x > min && x < max)
 
 //#define constrain(x, upper, lower) ((x > upper) ? upper : ((y < lower) ? (lower) : y));
 

@@ -171,6 +171,18 @@ int main() {
 					if (asteroids[i].x < astro_x && asteroids[i].scorable) {
 						score += AST_SCORE_VALUE;	// increment score for each asteroid passed while we're dealing with positions
 						asteroids[i].scorable = 0;
+						
+						if (
+							isBetween(	asteroids[i].y + asteroids[i].sprite->height,	// bottom of asteroid
+										astro_y - astronaut->height*BONUS_SCORE_RANGE,	// top of astronaut + range
+										astro_y	)										// top of astronaut
+							||
+							isBetween(	asteroids[i].y,														// top of asteroid
+										astro_y + astronaut->height,										// bottom of astronaut
+										astro_y + astronaut->height + astronaut->height*BONUS_SCORE_RANGE )	// bottom of astronaut + range
+						) {
+							score += AST_SCORE_VALUE;
+						}
 					}
 				}
 			}
@@ -196,13 +208,24 @@ int main() {
 				gfx_FillRectangle(0, 0, LCDX, SCOREBAR_HEIGHT-1);
 				gfx_SetColor(WHITE);
 				gfx_HorizLine(0, SCOREBAR_HEIGHT-1, LCDX);
-				gfx_SetColor(BLACK);
+				//gfx_SetColor(BLACK);
 				
 				sprintf(scoreText, scoreTextFormat, score);
 				gfx_PrintStringXY(scoreText, 3, 3);
 				
 				prevScore = score;
 			}
+			
+				// Debug ----------------------
+			// Bonus score
+			/* gfx_SetColor(WHITE);
+			gfx_HorizLine(astro_x, asteroids[i].y + asteroids[i].sprite->height, astronaut->width);		// bottom of asteroid
+			gfx_HorizLine(astro_x, astro_y - astronaut->height*BONUS_SCORE_RANGE, astronaut->width);	// top of astronaut + range
+			gfx_HorizLine(astro_x, astro_y, astronaut->width);											// top of astronaut
+			gfx_HorizLine(astro_x, asteroids[i].y, astronaut->width);														// top of asteroid
+			gfx_HorizLine(astro_x, astro_y + astronaut->height, astronaut->width);											// bottom of astronaut
+			gfx_HorizLine(astro_x, astro_y + astronaut->height + astronaut->height*BONUS_SCORE_RANGE, astronaut->width);	// bottom of astronaut + range
+			gfx_SetColor(BLACK); */
 			
 			gfx_BlitBuffer();
 			
