@@ -208,7 +208,7 @@ int main() {
 				gfx_FillRectangle(0, 0, LCDX, SCOREBAR_HEIGHT-1);
 				gfx_SetColor(WHITE);
 				gfx_HorizLine(0, SCOREBAR_HEIGHT-1, LCDX);
-				//gfx_SetColor(BLACK);
+				gfx_SetColor(BLACK);
 				
 				sprintf(scoreText, scoreTextFormat, score);
 				gfx_PrintStringXY(scoreText, 3, 3);
