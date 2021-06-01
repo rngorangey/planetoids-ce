@@ -2,6 +2,7 @@
 #include <tice.h>
 #include <graphx.h>
 #include <keypadc.h>
+#include <fileioc.h>
 #include <debug.h>
 
 #include "main.h"
@@ -35,12 +36,13 @@ void resetTimer(float min, float max) {
 
 int main() {
 	const int astro_x = 80;
-	int astro_y, score, prevScore; 
+	int astro_y, score, prevScore, hiScore; 
+	ti_var_t hiScoreVar;
 		//astroOffset = -(astronaut->height/2);
 	uint16_t i, j;
 	float 	moveAcc, acc, vel, drag, minAstSec, maxAstSec;
 	uint8_t gameState = MAIN_MENU, collided;
-	char scoreText[ sizeof(scoreTextFormat)+10 ];
+	char scoreText[ sizeof(scoreTextFormat)+10 ], hiScoreText[ sizeof(hiScoreTextFormat)+10 ];
 	
 	//struct Asteroid* curAst;
 	
@@ -53,6 +55,15 @@ int main() {
 	};
 	
 	// -----------------------------------------------------------------------------
+	
+	// open highscore var
+	ti_CloseAll();
+	
+	hiScoreVar = ti_Open(APPVAR_NAME, "w");
+	if (hiScoreVar == 0) return 1;	// return error if file couldn't be opened
+	
+	// -----------------------------------------------------------------------------
+	
 	
 	gfx_Begin();
 	gfx_SetDrawBuffer();
@@ -115,6 +126,14 @@ int main() {
 		
 		timer_SetReload(1, 1*TIMER_FREQ);	// initialize system timer
 		resetTimer(minAstSec, maxAstSec);
+		
+		hiScore = ti_Read(&hiScore, sizeof(hiScore), 1, hiScoreVar);
+		
+		// draw high score ----
+		gfx_SetColor(WHITE);		
+		sprintf(hiScoreText, hiScoreTextFormat, hiScore);
+		gfx_PrintStringXY(hiScoreText, LCDX-3-gfx_GetStringWidth(hiScoreText), 3);
+		gfx_SetColor(BLACK);
 		
 		while(gameState == GAME_RUNNING) {
 			// Check for keys pressed -------------------------
@@ -204,8 +223,9 @@ int main() {
 			
 				// Score ----------------------
 			if (score != prevScore) {
+				// current score ----
 				gfx_SetColor(BLACK);
-				gfx_FillRectangle(0, 0, LCDX, SCOREBAR_HEIGHT-1);
+				gfx_FillRectangle(0, 0, LCDX/2, SCOREBAR_HEIGHT-1);
 				gfx_SetColor(WHITE);
 				gfx_HorizLine(0, SCOREBAR_HEIGHT-1, LCDX);
 				//gfx_SetColor(BLACK);
@@ -214,6 +234,8 @@ int main() {
 				gfx_PrintStringXY(scoreText, 3, 3);
 				
 				prevScore = score;
+				
+				gfx_SetColor(BLACK);
 			}
 			
 				// Debug ----------------------
@@ -270,6 +292,11 @@ int main() {
 		timer_Disable(1);
 		
 		while (gameState == GAME_OVER) {
+			if (score > hiScore) hiScore = score;
+			
+			if (ti_Write(&hiScore, sizeof(hiScore), 1, hiScoreVar) != 1) return 1;
+			
+			
 			switch (os_GetCSC()) {
 				case sk_Alpha:
 					gameState = GAME_RUNNING;
@@ -281,6 +308,7 @@ int main() {
 		}
 	}
 	
+	timer_Disable(1);
 	gfx_End();
 	
 	return 0;

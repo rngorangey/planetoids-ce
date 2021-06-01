@@ -7,6 +7,8 @@
 #define LOWER_BOUND LCDY
 #define PLAYFIELD_HEIGHT (LCDY-SCOREBAR_HEIGHT)
 
+#define APPVAR_NAME "PlanetHi"
+
 #define TIMER_FREQ 32768.0 // Hz
 
 #define AST_SKINS 4
@@ -20,6 +22,7 @@
 #define isBetween(x, min, max) (x > min && x < max)
 
 //#define constrain(x, upper, lower) ((x > upper) ? upper : ((y < lower) ? (lower) : y));
+
 
 enum GameStates {
 	MAIN_MENU,
@@ -61,3 +64,4 @@ const char titleText[] = "PLANETOIDS";
 const char subtitleText[] = "PRESS [alpha] TO START";
 const char subSubtitleText[] = "PRESS [clear] TO RETURN TO TIOS";
 const char scoreTextFormat[] = "SCORE: %d";
+const char hiScoreTextFormat[] = "HI: %d";
