@@ -26,20 +26,23 @@
 //#define constrain(x, upper, lower) ((x > upper) ? upper : ((y < lower) ? (lower) : y));
 
 void spawnAsteroid();
-void error();
 void resetTimer(float min, float max);
 void writeInt(int* data, ti_var_t var);
 void readInt(int* destination, ti_var_t var);
 int main();
 
 int status = 0;
+char* errorText;
 
 enum GameStates {
+	ERROR,
 	MAIN_MENU,
 	GAME_RUNNING,
 	GAME_OVER,
 	CLOSE
 };
+
+uint8_t gameState = MAIN_MENU;
 
 enum Colors {
 	BLACK = 1,
