@@ -58,13 +58,7 @@ int main() {
 	
 	// open highscore var
 	ti_CloseAll();
-	
-	hiScoreVar = ti_Open(APPVAR_NAME, "w");
-	if (hiScoreVar == 0) return 1;	// return error if file couldn't be opened
-	
-	// -----------------------------------------------------------------------------
-	
-	
+		
 	gfx_Begin();
 	gfx_SetDrawBuffer();
 	
@@ -127,6 +121,8 @@ int main() {
 		timer_SetReload(1, 1*TIMER_FREQ);	// initialize system timer
 		resetTimer(minAstSec, maxAstSec);
 		
+		hiScoreVar = ti_Open(APPVAR_NAME, "r");
+		if (hiScoreVar == 0) return 1;	// return error if file couldn't be opened
 		hiScore = ti_Read(&hiScore, sizeof(hiScore), 1, hiScoreVar);
 		
 		// draw high score ----
@@ -291,19 +287,19 @@ int main() {
 		
 		timer_Disable(1);
 		
-		while (gameState == GAME_OVER) {
+		if(gameState == GAME_OVER) {
 			if (score > hiScore) hiScore = score;
-			
 			if (ti_Write(&hiScore, sizeof(hiScore), 1, hiScoreVar) != 1) return 1;
-			
-			
-			switch (os_GetCSC()) {
-				case sk_Alpha:
-					gameState = GAME_RUNNING;
-					break;
-				case sk_Clear:
-					gameState = MAIN_MENU;
-					break;
+		
+			while (gameState == GAME_OVER) {
+				switch (os_GetCSC()) {
+					case sk_Alpha:
+						gameState = GAME_RUNNING;
+						break;
+					case sk_Clear:
+						gameState = MAIN_MENU;
+						break;
+				}
 			}
 		}
 	}
