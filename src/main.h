@@ -20,9 +20,19 @@
 #define BONUS_SCORE_RANGE 0.66
 
 #define isBetween(x, min, max) (x > min && x < max)
+#define writeHiScore() writeInt(&hiScore, hiScoreVar)
+#define readHiScore() readInt(&hiScore, hiScoreVar)
 
 //#define constrain(x, upper, lower) ((x > upper) ? upper : ((y < lower) ? (lower) : y));
 
+void spawnAsteroid();
+void error();
+void resetTimer(float min, float max);
+void writeInt(int* data, ti_var_t var);
+void readInt(int* destination, ti_var_t var);
+int main();
+
+int status = 0;
 
 enum GameStates {
 	MAIN_MENU,

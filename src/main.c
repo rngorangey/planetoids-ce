@@ -7,33 +7,6 @@
 
 #include "main.h"
 
-void spawnAsteroid(int x, int y, int vel) {
-	gfx_sprite_t* asteroidSkins[AST_SKINS] = {asteroid10, asteroid15, asteroid20, asteroid25};
-	
-	asteroids[asteroidArrayPtr] = (struct Asteroid) {	
-		.sprite = 	asteroidSkins[randInt(0, AST_SKINS-1)],
-		.x =		x,
-		.y = 		y,
-		.vel = 		vel,
-		.active = 	1,
-		.scorable = 1
-	};
-	
-	asteroidArrayPtr = (asteroidArrayPtr >= MAX_ASTEROIDS-1) ? 0 : asteroidArrayPtr+1 ; // wrap array pointer if max number of asteroids reached
-}
-
-void resetTimer(float min, float max) {
-	// generate a random float between max and min to set the timer with
-	float randDelay = (((float)(random()&0x0000FFFF) * (max-min)) / 0xFFFF ) + min;
-	//dbg_sprintf(dbgout, "randDelay: %f\n", randDelay);
-	
-	timer_AckInterrupt(1, TIMER_RELOADED);
-	timer_Disable(1);
-	timer_Set		(1, (int) (randDelay * TIMER_FREQ));
-	//timer_SetReload	(1, (int) (randDelay * TIMER_FREQ));	// not needed since timer is never allowed to cycle
-	timer_Enable(1, TIMER_32K, TIMER_0INT, TIMER_DOWN);
-}
-
 int main() {
 	const int astro_x = 80;
 	int astro_y, score, prevScore, hiScore; 
@@ -55,8 +28,7 @@ int main() {
 	};
 	
 	// -----------------------------------------------------------------------------
-	
-	// open highscore var
+
 	ti_CloseAll();
 		
 	gfx_Begin();
@@ -66,6 +38,8 @@ int main() {
 	gfx_SetTransparentColor(0);
 	
 	while (gameState != CLOSE) {
+		readHiScore();
+		
 		if (gameState == MAIN_MENU) {
 			gfx_FillScreen(BLACK);
 			gfx_SetTextFGColor(WHITE);
@@ -121,9 +95,7 @@ int main() {
 		timer_SetReload(1, 1*TIMER_FREQ);	// initialize system timer
 		resetTimer(minAstSec, maxAstSec);
 		
-		hiScoreVar = ti_Open(APPVAR_NAME, "r");
-		if (hiScoreVar == 0) return 1;	// return error if file couldn't be opened
-		hiScore = ti_Read(&hiScore, sizeof(hiScore), 1, hiScoreVar);
+		
 		
 		// draw high score ----
 		gfx_SetColor(WHITE);		
@@ -289,7 +261,6 @@ int main() {
 		
 		if(gameState == GAME_OVER) {
 			if (score > hiScore) hiScore = score;
-			if (ti_Write(&hiScore, sizeof(hiScore), 1, hiScoreVar) != 1) return 1;
 		
 			while (gameState == GAME_OVER) {
 				switch (os_GetCSC()) {
@@ -304,8 +275,61 @@ int main() {
 		}
 	}
 	
+	ERROR:
+	
+	writeHiScore();
+
 	timer_Disable(1);
 	gfx_End();
 	
-	return 0;
+	return status;
 }
+
+void spawnAsteroid(int x, int y, int vel) {
+	gfx_sprite_t* asteroidSkins[AST_SKINS] = {asteroid10, asteroid15, asteroid20, asteroid25};
+	
+	asteroids[asteroidArrayPtr] = (struct Asteroid) {	
+		.sprite = 	asteroidSkins[randInt(0, AST_SKINS-1)],
+		.x =		x,
+		.y = 		y,
+		.vel = 		vel,
+		.active = 	1,
+		.scorable = 1
+	};
+	
+	asteroidArrayPtr = (asteroidArrayPtr >= MAX_ASTEROIDS-1) ? 0 : asteroidArrayPtr+1 ; // wrap array pointer if max number of asteroids reached
+}
+
+void error(const char message[]) {
+	status = 1;
+	gfx_End();
+	os_ClrHome();
+	os_SetCursorPos(0,0);
+	os_PutStrFull(message);
+	goto ERROR;
+}
+
+void resetTimer(float min, float max) {
+	// generate a random float between max and min to set the timer with
+	float randDelay = (((float)(random()&0x0000FFFF) * (max-min)) / 0xFFFF ) + min;
+	//dbg_sprintf(dbgout, "randDelay: %f\n", randDelay);
+	
+	timer_AckInterrupt(1, TIMER_RELOADED);
+	timer_Disable(1);
+	timer_Set		(1, (int) (randDelay * TIMER_FREQ));
+	//timer_SetReload	(1, (int) (randDelay * TIMER_FREQ));	// not needed since timer is never allowed to cycle
+	timer_Enable(1, TIMER_32K, TIMER_0INT, TIMER_DOWN);
+}
+
+void writeInt(int* data, ti_var_t var) {
+	var = ti_Open(APPVAR_NAME, "w");
+	if (var == 0 || ti_Write(data, sizeof(data), 1, var) != 1) error("Failed to write hiscore data\n");
+	ti_Close(var);
+}	
+
+void readInt(int* destination, ti_var_t var) {
+	var = ti_Open(APPVAR_NAME, "r");
+	if (var == 0) error("Failed to read hiscore data\n");
+	ti_Read(&destination, sizeof(destination), 1, var);
+	ti_Close(var);
+};
