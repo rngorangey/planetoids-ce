@@ -61,22 +61,25 @@ int main() {
 	// read high score appvar into hiScore variable -----------
 	// if it doesn't exist, create it and write 0 to it*
 	if ( (appVar = ti_Open(APPVAR_NAME, "r")) == 0) {
-		dbg_printf("Could not open AppVar.\nAttempting to create one... ");
+		//dbg_printf("Could not open AppVar.\nAttempting to create one... ");
 		ti_Close(appVar);
 		if ( (appVar = ti_Open(APPVAR_NAME, "w")) == 0) {
-			dbg_printf("failed.\n");
+			//dbg_printf("failed.\n");
+			error("Failed to create AppVar for hi scores.");
 		} else {
-			dbg_printf("success.\n");
+			//dbg_printf("success.\n");
 			// score is initialized to 0 earlier
 			if ( ti_Write( &score, sizeof(score), 1, appVar) != 1) {
-				dbg_printf("Could not write AppVar.\n");
-				gameState = ERROR;
+				//dbg_printf("Could not write AppVar.\n");
+				//gameState = ERROR;
+				error("Failed to write to new AppVar for hi scores.");
 			}
 		}
 	}
 	ti_Rewind(appVar);
 	if ( ti_Read(&hiScore, sizeof(hiScore), 1, appVar) != 1 ) {
-		dbg_printf("Could not read AppVar.\n");
+		//dbg_printf("Could not read AppVar.\n");
+		error("Could not read AppVar for hi scores.");
 	}
 	ti_Close(appVar);
 	// --------------------------------------------------------
@@ -337,10 +340,12 @@ int main() {
 	// write highscore to appvar if newHiScore
 	if (newHiScore) {
 		if ( (appVar = ti_Open(APPVAR_NAME, "w")) == 0) {
-			dbg_printf("Could not open AppVar.\n");
+			//dbg_printf("Could not open AppVar.\n");
+			error("Could not open AppVar for hi scores."); // doesn't do anything because this isn't in the game loop...
 		}
 		if ( ti_Write(&hiScore, sizeof(hiScore), 1, appVar) != 1) {
-			dbg_printf("Could not write AppVar.\n");
+			//dbg_printf("Could not write AppVar.\n");
+			error("Could not write to AppVar for hi scores.");
 		}
 		ti_Close(appVar);
 	}
