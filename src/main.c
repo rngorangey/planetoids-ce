@@ -34,32 +34,14 @@ void resetTimer(float min, float max) {
 	timer_Enable(1, TIMER_32K, TIMER_0INT, TIMER_DOWN);
 }
 
-void writeInt(int* data, ti_var_t var) {
-	var = ti_Open(APPVAR_NAME, "w");
-	dbg_printf("var = %d\nti_Write = %d\n\n", var, ti_Write(data, sizeof(data), 1, var));
-	ti_Close(var);
-}	
-
-void readInt(int* destination, ti_var_t var) {
-	var = ti_Open(APPVAR_NAME, "r");
-	dbg_printf("var = %d\n", var);
-	if (var == 0) {
-		writeInt(0, var);
-		destination = 0;
-		return;
-	}
-	ti_Read(&destination, sizeof(destination), 1, var);
-	ti_Close(var);
-};
-
 int main() {
 	const int astro_x = 80;
 	int astro_y, score, prevScore, hiScore; 
-	ti_var_t hiScoreVar;
+	ti_var_t appVar;
 		//astroOffset = -(astronaut->height/2);
 	uint16_t i, j;
 	float 	moveAcc, acc, vel, drag, minAstSec, maxAstSec;
-	uint8_t collided;
+	uint8_t collided, newHiScore = 0;
 	char scoreText[ sizeof(scoreTextFormat)+10 ], hiScoreText[ sizeof(hiScoreTextFormat)+10 ];
 	
 	//struct Asteroid* curAst;
@@ -75,14 +57,22 @@ int main() {
 	// -----------------------------------------------------------------------------
 
 	ti_CloseAll();
-		
+	
+	// read high score appvar into hiScore variable
+	// if it doesn't exist, create it and write 0 to it*
+	if ( (appVar = ti_Open(APPVAR_NAME, "r")) == 0) {
+		dbg_printf("Could not open AppVar.\n");
+	}
+	if ( ti_Read(&hiScore, sizeof(hiScore), 1, appVar) != 1 ) {
+		dbg_printf("Could not read AppVar.\n");
+	}
+	ti_Close(appVar);
+	
 	gfx_Begin();
 	gfx_SetDrawBuffer();
 	
 	gfx_SetPalette(global_palette, sizeof_global_palette, 0);
 	gfx_SetTransparentColor(0);
-	
-	readHiScore();
 	
 	while (gameState != CLOSE) {		
 		if (gameState == MAIN_MENU) {
@@ -139,9 +129,7 @@ int main() {
 		
 		timer_SetReload(1, 1*TIMER_FREQ);	// initialize system timer
 		resetTimer(minAstSec, maxAstSec);
-		
-		
-		
+				
 		// draw high score ----
 		gfx_SetColor(WHITE);		
 		sprintf(hiScoreText, hiScoreTextFormat, hiScore);
@@ -305,8 +293,11 @@ int main() {
 		timer_Disable(1);
 		
 		if(gameState == GAME_OVER) {
-			if (score > hiScore) hiScore = score;
-		
+			if (score > hiScore) {
+				hiScore = score;
+				newHiScore = 1;
+			}
+			
 			while (gameState == GAME_OVER) {
 				switch (os_GetCSC()) {
 					case sk_Alpha:
@@ -326,13 +317,20 @@ int main() {
 			os_PutStrFull(errorText);
 			status = 1;
 			while(!os_GetCSC());
-			goto ERROR;
+			gameState = CLOSE;
 		}
 	}
 	
-	ERROR:
-	
-	writeHiScore();
+	// write highscore to appvar if newHiScore
+	if (newHiScore) {
+		if ( (appVar = ti_Open(APPVAR_NAME, "w")) == 0) {
+			dbg_printf("Could not open AppVar.\n");
+		}
+		if ( ti_Write(&hiScore, sizeof(hiScore), 1, appVar) != 1) {
+			dbg_printf("Could not write AppVar.\n");
+		}
+		ti_Close(appVar);
+	}
 
 	timer_Disable(1);
 	gfx_End();
