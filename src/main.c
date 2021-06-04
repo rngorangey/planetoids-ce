@@ -36,7 +36,7 @@ void resetTimer(float min, float max) {
 
 int main() {
 	const int astro_x = 80;
-	int astro_y, score, prevScore, hiScore; 
+	int astro_y, score = 0, prevScore, hiScore; 
 	ti_var_t appVar;
 		//astroOffset = -(astronaut->height/2);
 	uint16_t i, j;
@@ -58,15 +58,28 @@ int main() {
 
 	ti_CloseAll();
 	
-	// read high score appvar into hiScore variable
+	// read high score appvar into hiScore variable -----------
 	// if it doesn't exist, create it and write 0 to it*
 	if ( (appVar = ti_Open(APPVAR_NAME, "r")) == 0) {
-		dbg_printf("Could not open AppVar.\n");
+		dbg_printf("Could not open AppVar.\nAttempting to create one... ");
+		ti_Close(appVar);
+		if ( (appVar = ti_Open(APPVAR_NAME, "w")) == 0) {
+			dbg_printf("failed.\n");
+		} else {
+			dbg_printf("success.\n");
+			// score is initialized to 0 earlier
+			if ( ti_Write( &score, sizeof(score), 1, appVar) != 1) {
+				dbg_printf("Could not write AppVar.\n");
+				gameState = ERROR;
+			}
+		}
 	}
+	ti_Rewind(appVar);
 	if ( ti_Read(&hiScore, sizeof(hiScore), 1, appVar) != 1 ) {
 		dbg_printf("Could not read AppVar.\n");
 	}
 	ti_Close(appVar);
+	// --------------------------------------------------------
 	
 	gfx_Begin();
 	gfx_SetDrawBuffer();
@@ -166,7 +179,7 @@ int main() {
 				acc = vel = 0;
 			}
 			
-			dbg_printf("acc: %f\n vel: %f\n\n", acc, vel);
+			//dbg_printf("acc: %f\n vel: %f\n\n", acc, vel);
 			
 			// Spawn an asteroid ----------------------------- (change to random interval at some point?)
 			
