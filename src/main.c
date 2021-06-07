@@ -36,7 +36,7 @@ void resetTimer(float min, float max) {
 
 int main() {
 	const int astro_x = 80;
-	int astro_y, score = 0, prevScore, hiScore; 
+	int astro_y, score = 0, prevScore, hiScore, astSpeedScale; 
 	ti_var_t appVar;
 		//astroOffset = -(astronaut->height/2);
 	uint16_t i, j;
@@ -130,6 +130,7 @@ int main() {
 		drag = 0.2;
 		minAstSec = 0.5;
 		maxAstSec = 1.0;
+		astSpeedScale = 1;
 		score = 0,
 		prevScore = -1;	// setting this to -1 rather than 0 makes it draw the score when the game begins
 	
