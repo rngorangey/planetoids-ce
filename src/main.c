@@ -36,11 +36,11 @@ void resetTimer(float min, float max) {
 
 int main() {
 	const int astro_x = 80;
-	int astro_y, score = 0, prevScore, hiScore, astSpeedScale; 
+	int astro_y, score = 0, prevScore, hiScore, nxtScoreIncrement; 
 	ti_var_t appVar;
 		//astroOffset = -(astronaut->height/2);
 	uint16_t i, j;
-	float 	moveAcc, acc, vel, drag, minAstSec, maxAstSec;
+	float 	moveAcc, acc, vel, drag, minAstSec, maxAstSec, astVel;
 	uint8_t collided, newHiScore = 0;
 	char scoreText[ sizeof(scoreTextFormat)+10 ], hiScoreText[ sizeof(hiScoreTextFormat)+10 ];
 	
@@ -130,9 +130,10 @@ int main() {
 		drag = 0.2;
 		minAstSec = 0.5;
 		maxAstSec = 1.0;
-		astSpeedScale = 1;
+		astVel = 3;
 		score = 0,
 		prevScore = -1;	// setting this to -1 rather than 0 makes it draw the score when the game begins
+		nxtScoreIncrement = EVERY_N_POINTS;
 	
 		memset(scoreText, '\0', sizeof(scoreText));
 		
@@ -190,12 +191,11 @@ int main() {
 			//dbg_sprintf(dbgout, "timer1 value: %lu\n", timer_GetSafe(1, TIMER_DOWN));
 			//dbg_sprintf(dbgout, "ChkInterrupt: %d\n", timer_ChkInterrupt(1, TIMER_RELOADED));
 			if (timer_ChkInterrupt(1, TIMER_RELOADED)) {
-				spawnAsteroid(LCDX+MAX_AST_SIZE, randInt(0+MAX_AST_SIZE, PLAYFIELD_HEIGHT-MAX_AST_SIZE), 3);
+				spawnAsteroid(LCDX+MAX_AST_SIZE, randInt(0+MAX_AST_SIZE, PLAYFIELD_HEIGHT-MAX_AST_SIZE), astVel);
 				resetTimer(minAstSec, maxAstSec);
 			}
 			
-			// Move asteroids --------------------------------- 
-				// (combine with rendering code later if possible for speedz?)
+			// Move asteroids and update score --------------- 
 			for (i=0; i<MAX_ASTEROIDS; i++) {
 				if (asteroids[i].active) {
 					asteroids[i].x -= (int) asteroids[i].vel;	// subtraction to move them to the left
@@ -222,6 +222,12 @@ int main() {
 						}
 					}
 				}
+			}
+			// Adjust asteroid velocity -----------------------
+			if (score > nxtScoreIncrement) {
+				astVel += ASTVEL_INC;
+				nxtScoreIncrement += EVERY_N_POINTS;
+				
 			}
 			
 			// Rendering --------------------------------------

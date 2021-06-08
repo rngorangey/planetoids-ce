@@ -19,6 +19,7 @@
 #define AST_SCORE_VALUE 5
 #define BONUS_SCORE_RANGE 0.66
 #define EVERY_N_POINTS 100
+#define ASTVEL_INC 0.5
 
 #define isBetween(x, min, max) (x > min && x < max)
 #define error(message) \
